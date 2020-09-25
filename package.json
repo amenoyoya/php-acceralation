@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "node-ssh": "^11.1.0",
+    "yargs": "^16.0.3"
+  }
+}

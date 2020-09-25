@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  amazon-apache-php56:
+    build: ./docker/amazon/apache-php56/
+    tty: true
+    ports:
+      - "18056:80" # http
+      - "12256:22" # ssh
+
+  centos-apache-php56:
+    build: ./docker/centos/apache-php56/
+    tty: true
+    ports:
+      - "28056:80" # http
+      - "22256:22" # ssh
+  
+  debian-apache-php56:
+    build: ./docker/debian/apache-php56/
+    tty: true
+    ports:
+      - "38056:80" # http
+      - "32256:22" # ssh
