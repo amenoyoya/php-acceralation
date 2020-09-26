@@ -12,7 +12,7 @@ elif [ "$(sudo find /etc/ -name '*-release' | xargs grep 'centos:6')" != "" ]; t
     os='CentOS6'
 elif [ "$(sudo find /etc/ -name '*-release'  | xargs grep 'centos:7')" != "" ]; then
     os='CentOS7'
-if [ "$(sudo find /etc/ -name '*-release' | xargs grep 'debian')" != "" ]; then
+elif [ -e /etc/debian_version ] || [ -e /etc/debian_release ]; then
     os='Debian'
 fi
 ```
