@@ -1,0 +1,9 @@
+[
+  {
+    "name": "index",
+    "path": "/",
+    "component": "/home/user/app/nodejs/php-acceralation/pages/index.vue",
+    "chunkName": "pages/index",
+    "_name": "_0a3a656a"
+  }
+]
