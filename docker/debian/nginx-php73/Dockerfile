@@ -15,7 +15,7 @@ RUN : 'install packages' && \
     chmod 600 ~/.ssh/authorized_keys && \
     mkdir -p /var/run/sshd && \
     sed -iE 's/^#\?\s*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config && \
-    sed -iE 's/^#\?\s*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+    sed -iE 's/^#\?\s*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
     : 'install apache, php56' && \
     wget -q https://packages.sury.org/php/apt.gpg -O- | apt-key add - && \
     echo "deb https://packages.sury.org/php/ stretch main" | tee /etc/apt/sources.list.d/php.list && \
