@@ -18,11 +18,9 @@ const main = async () => {
     privateKey: argv.i,
   })
   // 情報収集
-  console.log(`OS: ${await ssh.getOS()}`)
-  console.log('[PackageManager]:')
-  console.log(await ssh.getPackageManager())
-  console.log(`ServiceCommand: ${await ssh.getServiceCommand()}`)
-  console.log('[PHP]:')
+  console.log('[Server Info]')
+  console.log(await ssh.getInfo())
+  console.log('[PHP Info]')
   console.log(await ssh.getPHPVersion())
   console.log(await ssh.getPHPModules())
   // 切断
