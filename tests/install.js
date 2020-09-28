@@ -1,9 +1,9 @@
 /**
- * ssh接続先サーバでOPcacheインストール
+ * ssh接続先サーバでOPcache, APCuインストール
  *
  * $ docker-compose up -d
- * $ node tests/analyze.js -h <host> -p <port> -u <username> -s <password> -i <privatekey>
- * # ex) $ node tests/analyze_os.js -p 12256 -i sshkey/id_rsa
+ * $ node tests/install.js -h <host> -p <port> -u <username> -s <password> -i <privatekey>
+ * # ex) $ node tests/install.js -p 12256 -i sshkey/id_rsa
  */
 const argv = require('yargs').argv
 const connectSSH = require('../lib/ssh-connector')
@@ -26,15 +26,22 @@ const main = async () => {
   console.log('[PHP Info]')
   console.log(phpVer)
   console.log(phpMods)
-  // OPcacheインストール可能か判定
+  // OPcache, APCuインストール可能か判定
   if (info.sudo && phpVer.ver >= 55) {
+    // install OPcache
     if (phpMods.match(/opcache/i)) {
       console.log('OPcache already installed on this server')
     } else {
-      console.log(`install OPcache: ${await ssh.installOPcache(info.packageManager, info.repositories, phpVer.ver)}`)
+      console.log(`install OPcache: ${await ssh.installPHPModule(info.packageManager, info.repositories, phpVer.ver, 'opcache')}`)
+    }
+    // install APCu
+    if (phpMods.match(/apcu/i)) {
+      console.log('APCu already installed on this server')
+    } else {
+      console.log(`install APCu: ${await ssh.installPHPModule(info.packageManager, info.repositories, phpVer.ver, 'apcu')}`)
     }
   } else {
-    console.log('Cannot install OPcache on this server')
+    console.log('Cannot install OPcache, APCu on this server')
   }
   // 切断
   ssh.dispose()

@@ -3,7 +3,7 @@
  *
  * $ docker-compose up -d
  * $ node tests/analyze.js -h <host> -p <port> -u <username> -s <password> -i <privatekey>
- * # ex) $ node tests/analyze_os.js -p 12256 -i sshkey/id_rsa
+ * # ex) $ node tests/analyze.js -p 12256 -i sshkey/id_rsa
  */
 const argv = require('yargs').argv
 const connectSSH = require('../lib/ssh-connector')
