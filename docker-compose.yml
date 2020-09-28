@@ -7,6 +7,13 @@ services:
     ports:
       - "18056:80" # http
       - "12256:22" # ssh
+  
+  amazon-apache-php73:
+    build: ./docker/amazon/apache-php73/
+    tty: true
+    ports:
+      - "18073:80" # http
+      - "12273:22" # ssh
 
   centos-apache-php56:
     build: ./docker/centos/apache-php56/
@@ -15,9 +22,23 @@ services:
       - "28056:80" # http
       - "22256:22" # ssh
   
+  centos-apache-php73:
+    build: ./docker/centos/apache-php73/
+    tty: true
+    ports:
+      - "28073:80" # http
+      - "22273:22" # ssh
+  
   debian-apache-php56:
     build: ./docker/debian/apache-php56/
     tty: true
     ports:
       - "38056:80" # http
       - "32256:22" # ssh
+  
+  debian-apache-php73:
+    build: ./docker/debian/apache-php73/
+    tty: true
+    ports:
+      - "38073:80" # http
+      - "32273:22" # ssh

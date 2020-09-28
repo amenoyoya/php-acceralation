@@ -4,8 +4,7 @@ COPY ./authorized_keys /root/.ssh/authorized_keys
 
 RUN : 'install packages' && \
     apt-get update && apt-get install -y \
-        sudo vim wget gnupg openssh-server locales && \
-        ca-certificates apt-transport-https && \
+        sudo vim wget gnupg openssh-server locales apt-transport-https && \
     : 'set locale' && \
     locale-gen ja_JP.UTF-8 && \
     localedef -f UTF-8 -i ja_JP ja_JP.utf8 && \

@@ -18,15 +18,15 @@ RUN : 'install packages' && \
     echo "\n\n" | ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key && \
     sed -iE 's/^#\?\s*PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config && \
     sed -iE 's/^#\?\s*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
-    : 'install apache, php56' && \
+    : 'install apache, php73' && \
     yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm && \
-    yum -y update --enablerepo=epel,remi,remi-php56 && \
+    yum -y update --enablerepo=epel,remi,remi-php73 && \
     yum install -y \
         libwebp libmcrypt libtool-ltdl libtidy libXpm libtiff \
         ncurses-compat-libs gd-last autoconf automake httpd && \
-    yum install -y --enablerepo=remi,remi-php56 t1lib && \
-    yum install -y --disablerepo=amzn2-core --enablerepo=epel,remi,remi-php56 php php-mbstring php-gd && \
+    yum install -y --enablerepo=remi,remi-php73 t1lib && \
+    yum install -y --disablerepo=amzn2-core --enablerepo=epel,remi,remi-php73 php php-mbstring php-gd && \
     : 'clear yum cache' && \
     yum clean all
 
