@@ -1,0 +1,14 @@
+directories:
+  output: dist
+  buildResources: build
+appId: local.php-acceralation.app
+files:
+  - filter:
+      - public
+      - index.js
+      - package.json
+win:
+  target: zip
+linux:
+  target: zip
+electronVersion: 10.1.4
