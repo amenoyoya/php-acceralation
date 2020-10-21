@@ -18,9 +18,7 @@ OPcache, APCu を導入して PHP 環境を高速化する支援ツール
 $ yarn
 ```
 
-### Usage
-現状、CLIツールの提供のみ
-
+### Usage (CLI)
 ```bash
 $ node cli.js -h <host> -p <port> -u <username> -s <password> -i <privatekey>
 # -h: 接続先サーバIPを指定
@@ -32,6 +30,9 @@ $ node cli.js -h <host> -p <port> -u <username> -s <password> -i <privatekey>
 # 例) IP: 12.34.5.67:22 のサーバに User: ec2-user, SSHKey: ~/.ssh/aws.pem で接続する場合
 $ node cli.js -h 12.34.5.67 -p 22 -u ec2-user -i ~/.ssh/aws.pem
 ```
+
+### Usage (GUI)
+Read [Manual.md].
 
 ***
 
