@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP高速化調査ツール</title>
+    <!-- Tailwind.css -->
+    <link href="./assets/css/tailwind-1.9.5.min.css" rel="stylesheet">
+    <!-- Alpine.js IE polyfill -->
+    <script type="module" src="./assets/js/alpine-2.x.x.min.js"></script>
+    <script nomodule src="./assets/js/alpine-ie11-2.x.x.min.js" defer></script>
+    <!-- Alpine.js -->
+    <script src="./assets/js/alpine-2.7.0.js" defer></script>
+</head>
+<body x-data="app()">
+    <section class="absolute top-0 left-0 w-screen h-screen" x-show="loading">
+        <div class="flex justify-center items-center bg-white bg-opacity-50 z-10 w-full h-full">
+            Loading...
+        </div>
+    </section>
+    <section class="w-4/5 mx-auto my-4">
+        <h1 class="text-2xl">PHP高速化調査ツール</h1>
+        <form class="my-4">
+            <div class="flex flex-col my-2">
+                <label for="host">接続先ホスト名</label>
+                <input type="text" id="host" :class="css.input" x-model="host" placeholder="127.0.0.1" />
+            </div>
+            <div class="flex flex-col my-2">
+                <label for="port">接続先ポート</label>
+                <input type="text" id="port" :class="css.input" x-model="port" placeholder="22" />
+            </div>
+            <div class="flex flex-col my-2">
+                <label for="user">接続ユーザ名</label>
+                <input type="text" id="user" :class="css.input" x-model="user" placeholder="root" />
+            </div>
+            <div class="flex flex-col my-2">
+                <label for="password">接続パスワード</label>
+                <input type="password" id="password" :class="css.input" x-model="password" />
+            </div>
+            <div class="flex flex-col my-2">
+                <label for="keyfile">秘密鍵</label>
+                <input type="file" id="keyfile" :class="css.input" x-ref="file" @change="keyfile = $refs.file.files[0].path" />
+            </div>
+            <button type="submit" @click.prevent="execute()" :class="css.btn">調査実行</button>
+        </form>
+    </section>
+    <section class="w-4/5 mx-auto my-4" x-show="result">
+        <h1 class="text-2xl">調査結果</h1>
+        <pre class="my-4 border-2 bg-gray-200 p-4"><code x-text="result"></code></pre>
+    </section>
+
+    <script>
+        function app() {
+            return {
+                css: {
+                    btn: 'inline-block px-2 py-1 border-2 rounded shadow text-center hover:opacity-75',
+                    disabled: 'opacity-25 hover:opacity-25 hover:cursor-default',
+                    input: 'px-2 py-1 border border-gray-300 text-gray-900 rounded focus:outline-none focus:shadow-outline focus:z-10',
+                },
+
+                host: '',
+                port: '',
+                user: '',
+                password: '',
+                keyfile: '',
+                loading: false,
+                result: '',
+                
+                /**
+                 * 調査実行
+                 * @return {boolean}
+                 */
+                async execute() {
+                    const connectSSH = require('./lib/ssh-connector')
+                    const self = this
+                    let ssh
+
+                    self.loading = true
+                    self.result = ''
+                    try {
+                        // SSH接続
+                        ssh = await connectSSH({
+                            host: self.host || '127.0.0.1',
+                            port: parseInt(self.port) || 22,
+                            username: self.user || 'root',
+                            password: self.password === ''? undefined: self.password,
+                            privateKey: self.keyfile === ''? undefined: self.keyfile,
+                        })
+                    } catch (err) {
+                        self.loading = false
+                        self.result = `SSH接続エラー\n${err.toString()}`
+                        return false
+                    }
+                    // 情報収集
+                    const info = await ssh.getInfo()
+                    const phpVer = await ssh.getPHPVersion()
+                    const phpMods = await ssh.getPHPModules()
+                    self.result += `[Server Info]\n- sudo: ${info.sudo.toString()}\n- OS: ${info.os}\n- PackageManager: ${info.packageManager}\n- serviceCommand: ${info.serviceCommand}\n`
+                    self.result += `\n[PHP Info]\n- version: ${phpVer.ver} (${phpVer.fullver})\n`
+                    // OPcache, APCuインストール可能か判定
+                    if (info.sudo && phpVer.ver >= 55) {
+                        self.result += '\nPHP高速化可能なサーバです\n'
+                        // OPcache インストール済みか判定
+                        if (phpMods.match(/opcache/i)) {
+                            self.result += '- × OPcache はインストール済みです\n'
+                        } else {
+                            self.result += `- o OPcache インストールによる高速化が可能です\n`
+                        }
+                        // APCu インストール済みか判定
+                        if (phpMods.match(/apcu/i)) {
+                            self.result += '- × APCu はインストール済みです\n'
+                        } else {
+                            self.result += `- o APCu インストールによる高速化が可能です\n`
+                        }
+                    } else {
+                        self.result += '\nPHP高速化のできないサーバです\n'
+                    }
+                    // 切断
+                    await ssh.dispose()
+                    self.loading = false
+                    return true
+                }
+            }
+        }
+    </script>
+</body>
+</html>
